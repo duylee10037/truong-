@@ -7,21 +7,41 @@ window.addEventListener("scroll", function() {
 // Counter animation
 const counters = document.querySelectorAll(".counter");
 
-counters.forEach(counter => {
-    const updateCount = () => {
-        const target = +counter.getAttribute("data-target");
-        const count = +counter.innerText;
+function animateCounter(el, target) {
+    let count = 0;
+    const speed = 20;
 
-        const increment = target / 200;
+    function update() {
+        const increment = Math.ceil((target - count) / speed);
+        count += increment;
 
         if (count < target) {
-            counter.innerText = Math.ceil(count + increment);
-            setTimeout(updateCount, 10);
+            el.innerText = count;
+            requestAnimationFrame(update);
         } else {
-            counter.innerText = target;
+            el.innerText = target;
         }
-    };
-    updateCount();
+    }
+
+    update();
+}
+
+function handleScrollCounter() {
+    counters.forEach(counter => {
+        const rect = counter.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100 && !counter.classList.contains("done")) {
+            counter.classList.add("done");
+            const target = +counter.getAttribute("data-target");
+            animateCounter(counter, target);
+        }
+    });
+}
+
+window.addEventListener("scroll", handleScrollCounter);
+
+counters.forEach(counter => {
+    const target = +counter.getAttribute("data-target");
+    animateCounter(counter, target);
 });
 
 
@@ -152,4 +172,32 @@ document.querySelectorAll(".program-card").forEach(card => {
     card.addEventListener("mouseleave", () => {
         card.style.transform = "rotateX(0) rotateY(0)";
     });
+});
+
+
+const text = document.querySelector(".hero-slogan");
+const original = text.innerText;
+text.innerText = "";
+
+let i = 0;
+function typeWriter() {
+    if (i < original.length) {
+        text.innerText += original.charAt(i);
+        i++;
+        setTimeout(typeWriter, 40);
+    }
+}
+typeWriter();
+
+const backTop = document.getElementById("backTop");
+
+window.addEventListener("scroll", () => {
+    backTop.style.display = window.scrollY > 300 ? "block" : "none";
+});
+
+backTop.onclick = () => window.scrollTo({top:0, behavior:"smooth"});
+
+window.addEventListener("scroll", function() {
+    const nav = document.getElementById("navbar");
+    nav.classList.toggle("scrolled", window.scrollY > 50);
 });
