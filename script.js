@@ -176,18 +176,20 @@ document.querySelectorAll(".program-card").forEach(card => {
 
 
 const text = document.querySelector(".hero-slogan");
-const original = text.innerText;
-text.innerText = "";
+const original = text.textContent;
+text.textContent = "";
 
 let i = 0;
-function typeWriter() {
+
+function type() {
+    text.textContent += original[i];
+    i++;
     if (i < original.length) {
-        text.innerText += original.charAt(i);
-        i++;
-        setTimeout(typeWriter, 40);
+        setTimeout(type, 50);
     }
 }
-typeWriter();
+
+type();
 
 const backTop = document.getElementById("backTop");
 
